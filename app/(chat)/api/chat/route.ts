@@ -192,7 +192,10 @@ export async function POST(request: Request) {
       originalMessages: isToolApprovalFlow ? uiMessages : undefined,
       execute: async ({ writer: dataStream }) => {
         const result = streamText({
-          model: getLanguageModel(chatModel),
+          model: getLanguageModel(chatModel, {
+            provider: request.headers.get("x-byok-provider") as any ?? undefined,
+            apiKey: request.headers.get("x-byok-key") ?? undefined,
+          }),
           system: systemPrompt({ requestHints, supportsTools, luminorId: selectedLuminor as any }),
           messages: modelMessages,
           stopWhen: stepCountIs(5),

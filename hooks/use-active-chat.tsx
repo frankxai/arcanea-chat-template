@@ -139,6 +139,26 @@ export function ActiveChatProvider({ children }: { children: ReactNode }) {
     transport: new DefaultChatTransport({
       api: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/api/chat`,
       fetch: fetchWithErrorHandlers,
+      headers: () => {
+        // BYOK: read the active key from localStorage (set by BYOKProvider)
+        // Key NEVER touches our DB — it flows client → server → provider → discarded.
+        if (typeof window === "undefined") return {};
+        try {
+          const stored = window.localStorage.getItem("arcanea-byok-keys");
+          if (!stored) return {};
+          const keys = JSON.parse(stored) as Array<{ provider: string; key: string }>;
+          const activeProvider =
+            window.localStorage.getItem("arcanea-byok-active") ?? keys[0]?.provider;
+          const entry = keys.find((k) => k.provider === activeProvider);
+          if (!entry) return {};
+          return {
+            "x-byok-provider": entry.provider,
+            "x-byok-key": entry.key,
+          };
+        } catch {
+          return {};
+        }
+      },
       prepareSendMessagesRequest(request) {
         const lastMessage = request.messages.at(-1);
         const isToolApprovalContinuation =

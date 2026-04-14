@@ -18,6 +18,7 @@ interface BYOKContextType {
 }
 
 const STORAGE_KEY = 'arcanea-byok-keys';
+const ACTIVE_KEY = 'arcanea-byok-active';
 
 const PROVIDERS = [
   { provider: 'openai', label: 'OpenAI', placeholder: 'sk-...' },
@@ -39,10 +40,18 @@ export function BYOKProvider({ children }: { children: ReactNode }) {
       if (stored) {
         const parsed = JSON.parse(stored) as ProviderKey[];
         setKeys(parsed);
-        if (parsed.length > 0) setActiveProvider(parsed[0].provider);
+        const persistedActive = localStorage.getItem(ACTIVE_KEY);
+        const initial = persistedActive && parsed.find((k) => k.provider === persistedActive)
+          ? persistedActive
+          : parsed[0]?.provider ?? '';
+        setActiveProvider(initial);
       }
     } catch {}
   }, []);
+
+  useEffect(() => {
+    if (activeProvider) localStorage.setItem(ACTIVE_KEY, activeProvider);
+  }, [activeProvider]);
 
   function persistKeys(updated: ProviderKey[]) {
     setKeys(updated);
