@@ -80,7 +80,7 @@ export function BYOKProvider({ children }: { children: ReactNode }) {
   const activeKey = keys.find((k) => k.provider === activeProvider) ?? null;
 
   return (
-    <BYOKContext value={{
+    <BYOKContext.Provider value={{
       keys,
       activeKey,
       setActiveProvider,
@@ -89,7 +89,7 @@ export function BYOKProvider({ children }: { children: ReactNode }) {
       hasKey,
     }}>
       {children}
-    </BYOKContext>
+    </BYOKContext.Provider>
   );
 }
 

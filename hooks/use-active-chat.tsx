@@ -139,7 +139,7 @@ export function ActiveChatProvider({ children }: { children: ReactNode }) {
     transport: new DefaultChatTransport({
       api: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/api/chat`,
       fetch: fetchWithErrorHandlers,
-      headers: () => {
+      headers: (): Record<string, string> => {
         // BYOK: read the active key from localStorage (set by BYOKProvider)
         // Key NEVER touches our DB — it flows client → server → provider → discarded.
         if (typeof window === "undefined") return {};
