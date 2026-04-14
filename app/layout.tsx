@@ -7,9 +7,22 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://chat.vercel.ai"),
-  title: "Next.js Chatbot Template",
-  description: "Next.js chatbot template using the AI SDK.",
+  metadataBase: new URL("https://arcanea.ai"),
+  title: "Arcanea Chat Template — 12 Luminors, real BYOK, cosmic glass UI",
+  description:
+    "Premium AI chat template with 12 persona agents, liquid glass UI, and BYOK keys that never touch the server. MIT licensed. Fork for free.",
+  openGraph: {
+    title: "Arcanea Chat Template",
+    description:
+      "12 Luminors · Real BYOK · Cosmic glass · Fork the premium AI chat template",
+    type: "website",
+    siteName: "Arcanea",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Arcanea Chat Template",
+    description: "12 Luminors · Real BYOK · Cosmic glass",
+  },
 };
 
 export const viewport = {
