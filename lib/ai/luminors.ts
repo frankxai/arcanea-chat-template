@@ -112,6 +112,20 @@ export const LUMINORS: Luminor[] = [
   },
 ];
 
+export type LuminorId =
+  | 'lumina'
+  | 'lyssandria'
+  | 'leyla'
+  | 'draconia'
+  | 'maylinn'
+  | 'alera'
+  | 'lyria'
+  | 'aiyami'
+  | 'elara'
+  | 'ino'
+  | 'shinkami'
+  | 'nero';
+
 export function getLuminor(id: string): Luminor | undefined {
   return LUMINORS.find((l) => l.id === id);
 }

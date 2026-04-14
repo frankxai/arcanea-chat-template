@@ -1,5 +1,6 @@
 import type { Geo } from "@vercel/functions";
 import type { ArtifactKind } from "@/components/chat/artifact";
+import { getLuminorSystemPrompt, type LuminorId } from "./luminors";
 
 export const artifactsPrompt = `
 Artifacts is a side panel that displays content alongside the conversation. It supports scripts (code), documents (text), and spreadsheets. Changes appear in real-time.
@@ -66,17 +67,20 @@ About the origin of user's request:
 export const systemPrompt = ({
   requestHints,
   supportsTools,
+  luminorId,
 }: {
   requestHints: RequestHints;
   supportsTools: boolean;
+  luminorId?: LuminorId;
 }) => {
   const requestPrompt = getRequestPromptFromHints(requestHints);
+  const basePrompt = luminorId ? getLuminorSystemPrompt(luminorId) : regularPrompt;
 
   if (!supportsTools) {
-    return `${regularPrompt}\n\n${requestPrompt}`;
+    return `${basePrompt}\n\n${requestPrompt}`;
   }
 
-  return `${regularPrompt}\n\n${requestPrompt}\n\n${artifactsPrompt}`;
+  return `${basePrompt}\n\n${requestPrompt}\n\n${artifactsPrompt}`;
 };
 
 export const codePrompt = `

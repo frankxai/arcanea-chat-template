@@ -68,7 +68,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { id, message, messages, selectedChatModel, selectedVisibilityType } =
+    const { id, message, messages, selectedChatModel, selectedVisibilityType, selectedLuminor } =
       requestBody;
 
     const [, session] = await Promise.all([
@@ -193,7 +193,7 @@ export async function POST(request: Request) {
       execute: async ({ writer: dataStream }) => {
         const result = streamText({
           model: getLanguageModel(chatModel),
-          system: systemPrompt({ requestHints, supportsTools }),
+          system: systemPrompt({ requestHints, supportsTools, luminorId: selectedLuminor as any }),
           messages: modelMessages,
           stopWhen: stepCountIs(5),
           experimental_activeTools:
