@@ -45,6 +45,8 @@ type ActiveChatContextValue = {
   votes: Vote[] | undefined;
   currentModelId: string;
   setCurrentModelId: (id: string) => void;
+  currentLuminorId: string;
+  setCurrentLuminorId: (id: string) => void;
   showCreditCardAlert: boolean;
   setShowCreditCardAlert: Dispatch<SetStateAction<boolean>>;
 };
@@ -78,6 +80,18 @@ export function ActiveChatProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     currentModelIdRef.current = currentModelId;
   }, [currentModelId]);
+
+  const [currentLuminorId, setCurrentLuminorId] = useState<string>(() => {
+    if (typeof window === "undefined") return "lumina";
+    return window.localStorage.getItem("arcanea-selected-luminor") ?? "lumina";
+  });
+  const currentLuminorIdRef = useRef(currentLuminorId);
+  useEffect(() => {
+    currentLuminorIdRef.current = currentLuminorId;
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("arcanea-selected-luminor", currentLuminorId);
+    }
+  }, [currentLuminorId]);
 
   const [input, setInput] = useState("");
   const [showCreditCardAlert, setShowCreditCardAlert] = useState(false);
@@ -145,6 +159,7 @@ export function ActiveChatProvider({ children }: { children: ReactNode }) {
               ? { messages: request.messages }
               : { message: lastMessage }),
             selectedChatModel: currentModelIdRef.current,
+            selectedLuminor: currentLuminorIdRef.current,
             selectedVisibilityType: visibility,
             ...request.body,
           },
@@ -262,6 +277,8 @@ export function ActiveChatProvider({ children }: { children: ReactNode }) {
       votes,
       currentModelId,
       setCurrentModelId,
+      currentLuminorId,
+      setCurrentLuminorId,
       showCreditCardAlert,
       setShowCreditCardAlert,
     }),
@@ -281,6 +298,7 @@ export function ActiveChatProvider({ children }: { children: ReactNode }) {
       isLoading,
       votes,
       currentModelId,
+      currentLuminorId,
       showCreditCardAlert,
     ]
   );

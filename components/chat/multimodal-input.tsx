@@ -42,6 +42,8 @@ import {
   DEFAULT_CHAT_MODEL,
   type ModelCapabilities,
 } from "@/lib/ai/models";
+import { LUMINORS, getLuminor } from "@/lib/ai/luminors";
+import { useActiveChat } from "@/hooks/use-active-chat";
 import type { Attachment, ChatMessage } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import {
@@ -526,6 +528,7 @@ function PureMultimodalInput({
               onModelChange={onModelChange}
               selectedModelId={selectedModelId}
             />
+            <LuminorSelectorCompact />
           </PromptInputTools>
 
           {status === "submitted" ? (
@@ -814,3 +817,66 @@ function PureStopButton({
 }
 
 const StopButton = memo(PureStopButton);
+
+function PureLuminorSelectorCompact() {
+  const { currentLuminorId, setCurrentLuminorId } = useActiveChat();
+  const [open, setOpen] = useState(false);
+  const selected = getLuminor(currentLuminorId) ?? LUMINORS[0];
+
+  return (
+    <ModelSelector onOpenChange={setOpen} open={open}>
+      <ModelSelectorTrigger asChild>
+        <Button
+          className="h-7 max-w-[180px] justify-between gap-1.5 rounded-lg px-2 text-[12px] text-muted-foreground transition-colors hover:text-foreground"
+          data-testid="luminor-selector"
+          variant="ghost"
+        >
+          <span className="text-[#00bcd4]">✦</span>
+          <ModelSelectorName>{selected.name}</ModelSelectorName>
+        </Button>
+      </ModelSelectorTrigger>
+      <ModelSelectorContent className="w-[320px]">
+        <ModelSelectorInput placeholder="Search Luminors..." />
+        <ModelSelectorList>
+          <ModelSelectorGroup heading="Luminor Personas">
+            {LUMINORS.map((luminor) => (
+              <ModelSelectorItem
+                className={cn(
+                  "flex w-full flex-col items-start gap-0.5 py-2",
+                  luminor.id === selected.id &&
+                    "border-b border-dashed border-foreground/50"
+                )}
+                key={luminor.id}
+                onSelect={() => {
+                  setCurrentLuminorId(luminor.id);
+                  setOpen(false);
+                  setTimeout(() => {
+                    document
+                      .querySelector<HTMLTextAreaElement>(
+                        "[data-testid='multimodal-input']"
+                      )
+                      ?.focus();
+                  }, 50);
+                }}
+                value={`${luminor.id} ${luminor.name} ${luminor.domain}`}
+              >
+                <div className="flex w-full items-center gap-2">
+                  <span className="text-[#00bcd4]">✦</span>
+                  <ModelSelectorName>{luminor.name}</ModelSelectorName>
+                  <span className="ml-auto text-[10px] text-muted-foreground/60 uppercase tracking-wider">
+                    {luminor.gate}
+                  </span>
+                </div>
+                <span className="pl-6 text-[11px] text-muted-foreground/70">
+                  {luminor.domain}
+                </span>
+              </ModelSelectorItem>
+            ))}
+          </ModelSelectorGroup>
+        </ModelSelectorList>
+      </ModelSelectorContent>
+    </ModelSelector>
+  );
+}
+
+const LuminorSelectorCompact = memo(PureLuminorSelectorCompact);
