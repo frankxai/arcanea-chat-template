@@ -90,7 +90,7 @@ Everything else is inherited from the Vercel fork and works unchanged.
 
 ## License
 
-MIT — use commercially, modify freely, no attribution required.
+**Apache 2.0** — inherited from the [Vercel AI Chatbot](https://github.com/vercel/ai-chatbot) upstream. Use commercially, modify freely, retain the license notice. Arcanea-added code (Luminors, BYOK, cosmic theme) is also Apache 2.0-compatible.
 
 ---
 
